@@ -35,7 +35,60 @@ namespace colorSwitch
 
         private void playGame(object sender, EventArgs e)
         {
+            block1.Top += speed; // bring the block towards the bottom of this form
+            block2.Top += speed; // bring the block towards the bottom of this form
 
+
+            // if block1 has reached bottom of the form then
+            if (block1.Top > 500)
+            {
+                blockColor = rnd.Next(colors.Count); // choose a random color from the list
+                block1.BackColor = colors[blockColor]; // apply the random color to block 1
+                block1.Top = blockPosition.Next(200, 300) * -1; // randomly position the block on top of the form
+                score++; // add 1 to the score
+            }
+
+            // if block 2 has reached bottom of the form
+            if (block2.Top > 500)
+            {
+                // add block 1 is already on it's way to the form and passed 200 pixels
+                if (block2.Top > 100)
+                {
+                    blockColor = rnd.Next(colors.Count); // choose a random color from the list
+                    block2.BackColor = colors[blockColor]; // apply the color to block 2
+                    block2.Top = (block2.Top * 8) * -1; //randomly position the block on top of the form
+                    score++; // add 1 to the score
+                }
+            }
+
+            // if the player collodes with block 1
+            if (player.Bounds.IntersectsWith(block1.Bounds))
+            {
+                // if the player and block 1 don't have the same background color
+                if (player.BackColor != block1.BackColor)
+                {
+                    // we will add the current score to the list box with the time which they were played
+                    scoreList.Items.Add("Scored: " + score + " @" + string.Format(" {0:HH:mm:ss tt}", DateTime.Now));
+                    // game over
+                    gameTimer.Stop() // stop the timer
+
+                        gameOver = true; // set game over to true now that the player has lost
+                }
+            }
+
+            // if the player collides with block 2
+            if (score > 5)
+            {
+                speed = 6;
+            }
+            // if the score is greater than 10 then we increase the speed to 8
+            if (score > 8)
+            {
+                speed = 8;
+            }
+
+            block1.Refresh(); // refresh the clock one so its not glitchy when scrolling down
+            block2.Refresh(); // refresh the block two so its not glitchy when scrolling down
         }
 
         private void KeyisDown(object sender, KeyPressEventArgs e)
