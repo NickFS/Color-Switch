@@ -24,7 +24,9 @@ namespace colorSwitch
 
         int speed = 5; // speed of the blocks in the beginning of the game
 
-        int score = 0; // the default game over Boolean
+        int score = 0; // the default score of the game
+
+        bool gameOver = false; // the default game over Boolean
 
 
         public Form1()
@@ -37,6 +39,7 @@ namespace colorSwitch
         {
             block1.Top += speed; // bring the block towards the bottom of this form
             block2.Top += speed; // bring the block towards the bottom of this form
+            label1.Text = "Score " + score; //update the lable to show how much score we have
 
 
             // if block1 has reached bottom of the form then
@@ -70,13 +73,28 @@ namespace colorSwitch
                     // we will add the current score to the list box with the time which they were played
                     scoreList.Items.Add("Scored: " + score + " @" + string.Format(" {0:HH:mm:ss tt}", DateTime.Now));
                     // game over
-                    gameTimer.Stop() // stop the timer
+                    gameTimer.Stop(); // stop the timer
 
                         gameOver = true; // set game over to true now that the player has lost
                 }
             }
 
             // if the player collides with block 2
+            if (player.Bounds.IntersectsWith(block2.Bounds))
+            {
+                // if the player and block 2 DONT have the same background color
+                if (player.BackColor != block2.BackColor)
+                {
+                    // we will add the current score to the list box with the time which they played
+                    scoreList.Items.Add("Score: " + score + " @" + string.Format(" {0:HH:mm:ss tt}", DateTime.Now));
+                    //game over
+                    gameTimer.Stop(); //stop the timer
+
+                    gameOver = true; // set the game over to true now that the player has lost
+                }
+            }
+
+            // if the score is greater than 5 then we increate the speed to 6
             if (score > 5)
             {
                 speed = 6;
@@ -87,7 +105,7 @@ namespace colorSwitch
                 speed = 8;
             }
 
-            block1.Refresh(); // refresh the clock one so its not glitchy when scrolling down
+            block1.Refresh(); // refresh the block one so its not glitchy when scrolling down
             block2.Refresh(); // refresh the block two so its not glitchy when scrolling down
         }
 
@@ -111,11 +129,11 @@ namespace colorSwitch
             // if the key capital R or lower case r is pressed then we do the following
             // if the game is also true only then the game will reset else it will not do anything
 
-            if (e.KeyChar == (char)Keys.R) || e.KeyChar == char.ToLower((char)Keys.R) && gameOver)
+            if (e.KeyChar == ((char)Keys.R) || e.KeyChar == char.ToLower ((char)Keys.R) && gameOver)
                 {
-                // invoke the reset game function
-                resetGame();
-                gameOver = false; // now the game is reset we will set game to false
+                    // invoke the reset game function
+                    resetGame();
+                    gameOver = false; // now the game is reset we will set game to false
                 }
         }
 
